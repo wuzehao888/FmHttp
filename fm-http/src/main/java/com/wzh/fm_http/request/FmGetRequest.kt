@@ -21,13 +21,14 @@ class FmGetRequest(url: String, client: OkHttpClient = FmHttp.okHttpClient) :
     private fun createGetUrl(url: String): String {
         val sb = StringBuilder()
         sb.append(url)
-        if (url.lastIndexOf("?") < 0) {
-            sb.append("?")
+        if (url.indexOf("?") > 0 || url.indexOf("&") > 0) {
+            sb.append("&");
         } else {
-            params.forEach { entry ->
-                sb.append("${entry.key}=${URLEncoder.encode(entry.value.toString(), "UTF-8")}")
-                    .append("&")
-            }
+            sb.append("?");
+        }
+        params.forEach { entry ->
+            sb.append("${entry.key}=${URLEncoder.encode(entry.value.toString(), "UTF-8")}")
+                .append("&")
         }
         sb.deleteCharAt(sb.length - 1)
         return sb.toString()
