@@ -5,10 +5,7 @@ import com.wzh.fm_http.callback.FmHttpResultCallback
 import com.wzh.fm_http.domain.FmHttpResult
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.Request
-import okhttp3.Response
+import okhttp3.*
 import java.io.IOException
 import java.lang.reflect.ParameterizedType
 import java.lang.reflect.Type
@@ -18,7 +15,10 @@ import java.lang.reflect.Type
  * @Author:         Wzh
  * @CreateDate:     2021/2/24 11:30
  */
-abstract class FmHttpRequest<FR : FmHttpRequest<FR>>(protected val url: String) {
+abstract class FmHttpRequest<FR : FmHttpRequest<FR>>(
+    protected val url: String,
+    private val client: OkHttpClient = FmHttp.okHttpClient
+) {
     //头信息
     private val headers by lazy { mutableMapOf<String, String>() }
 
@@ -87,7 +87,7 @@ abstract class FmHttpRequest<FR : FmHttpRequest<FR>>(protected val url: String) 
             builder.tag(tag)
         }
         val request = createOkHttpRequest(builder)
-        return FmHttp.okHttpClient.newCall(request)
+        return client.newCall(request)
     }
 
     /**

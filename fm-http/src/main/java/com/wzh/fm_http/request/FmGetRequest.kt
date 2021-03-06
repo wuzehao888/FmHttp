@@ -1,6 +1,8 @@
 package com.wzh.fm_http.request
 
+import com.wzh.fm_http.FmHttp
 import com.wzh.fm_http.FmHttpRequest
+import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.net.URLEncoder
 
@@ -9,7 +11,8 @@ import java.net.URLEncoder
  * @Author:         Wzh
  * @CreateDate:     2021/2/24 11:43
  */
-class FmGetRequest(url: String) : FmHttpRequest<FmGetRequest>(url) {
+class FmGetRequest(url: String, client: OkHttpClient = FmHttp.okHttpClient) :
+    FmHttpRequest<FmGetRequest>(url, client) {
 
     override fun createOkHttpRequest(builder: Request.Builder): Request {
         return builder.get().url(createGetUrl(url)).build()
