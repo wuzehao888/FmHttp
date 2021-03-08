@@ -7,6 +7,7 @@ import okhttp3.Call
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import java.util.concurrent.TimeUnit
+import javax.net.ssl.X509TrustManager
 
 /**
  * @Description:    Http
@@ -24,6 +25,11 @@ object FmHttp {
             .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
             .writeTimeout(TIME_OUT, TimeUnit.SECONDS)
             .addInterceptor(loggingInterceptor)
+            .sslSocketFactory(
+                SSLSocketClient.getSSLSocketFactory(),
+                SSLSocketClient.getTrustManager()[0] as X509TrustManager
+            )
+            .hostnameVerifier(SSLSocketClient.getHostnameVerifier())
             .build()
     }
 
@@ -35,6 +41,11 @@ object FmHttp {
             .connectTimeout(TIME_OUT, TimeUnit.SECONDS)
             .writeTimeout(TIME_OUT, TimeUnit.SECONDS)
             .addInterceptor(loggingInterceptor)
+            .sslSocketFactory(
+                SSLSocketClient.getSSLSocketFactory(),
+                SSLSocketClient.getTrustManager()[0] as X509TrustManager
+            )
+            .hostnameVerifier(SSLSocketClient.getHostnameVerifier())
             .build()
     }
 
