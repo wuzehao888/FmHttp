@@ -93,12 +93,25 @@ abstract class FmHttpRequest<FR : FmHttpRequest<FR>>(
     /**
      * 同步执行
      */
-    suspend fun execute(): Response = withContext(Dispatchers.IO) { okCall().execute() }
+    suspend fun execute(): Response? = withContext(Dispatchers.IO) {
+        try {
+            okCall().execute()
+        } catch (e: IOException) {
+            e.printStackTrace()
+            null
+        }
+    }
 
     /**
      * 异步执行
      */
-    fun enqueue(callback: Callback) = okCall().enqueue(callback)
+    fun enqueue(callback: Callback) {
+        try {
+            okCall().enqueue(callback)
+        } catch (e: IOException) {
+            e.printStackTrace()
+        }
+    }
 
     /**
      * 同步执行
@@ -106,6 +119,12 @@ abstract class FmHttpRequest<FR : FmHttpRequest<FR>>(
     suspend fun <T> execute(type: Type): FmHttpResult<T> = withContext(Dispatchers.IO) {
         try {
             val response = execute()
+                ?: return@withContext FmHttpResult<T>(
+                    false,
+                    FmHttpResult.ERROR_CODE,
+                    "网络异常",
+                    null
+                )
             return@withContext parseResponse<T>(response, type)
         } catch (e: IOException) {
             e.printStackTrace()
